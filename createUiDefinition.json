@@ -1,0 +1,62 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "basics": [
+            {
+                "name": "projectName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Deployment Name",
+                "toolTip": "This name should be unique within a resource group. This will be the prefix to all resources created by this deployment.",
+                "defaultValue": "mosaicRegistration1",
+                "constraints": {
+                    "required": true,
+                    "regex": "^[a-z0-9]{4,20}$",
+                    "validationMessage": "The Name must be between 4 and 20 characters long and contain lowercase letters and numbers only."
+                }
+            }     
+        ],
+        "steps": [
+            {
+                "name": "VirtualMachineConfig",
+                "label": "Virtual Machine Settings",
+                "subLabel": {
+                    "preValidation": "Configure the virtual machine's resources and settings",
+                    "postValidation": "Done"
+                },
+                "bladeTitle": "Virtual Machine Settings",
+                "elements": [
+                    
+                    {
+                        "name": "SSHPublicKey",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "SSH Public Key",
+                        "toolTip": "A standard SSH public key",
+                        "constraints": {
+                            "required": true
+                        }
+                    },
+                    {
+                        "name": "inboundIpCidr",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "IP range to allow inbound",
+                        "toolTip": "IP CIDR block ex - 0.0.0.0/0",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^([0-9]{1,3}\\.){3}[0-9]{1,3}(\\\/([0-9]|[1-2][0-9]|3[0-2]))?$",
+                            "validationMessage": "IP range invalid"
+                        }
+                    }
+                ]
+            }
+        ],
+        "outputs": {
+            "location": "[location()]",
+            "projectName": "[basics('projectName')]",
+            "SSHPublicKey": "[steps('VirtualMachineConfig').SSHPublicKey]",
+
+            "inboundIpCidr": "[steps('VirtualMachineConfig').inboundIpCidr]"
+        }
+    }
+}
